@@ -1,33 +1,43 @@
 //命令格式
 //length（1B） 总长度 xn(2B) (设备编号)  命令字 （1B）n 数据个数(1B) data(nB) checksum(1B)
-let bufs=['14','00','01','A0','0E','30','30','30','30','30','30','30','31','31','32','33','34','35','36','79']
-let arr=bufs.map((item)=>{
-  return '0x'+item
-})
-let login=Buffer.from(['14','00','01','A0','0E','30','30','30','30','30','30','30','31','31','32','33','34','35','36','79']);
-// 14 长度20
-const buf = Buffer.from([arr[0]]);
-console.log(parseInt(buf.toString('hex'),16));
-// 00 01 机器的编号 00 * 256 + 01 = 1
-console.log(arr[1]*256+Number(arr[2]))
-// A0  登陆
-// 0E 数据长度14
-const dataBuf = Buffer.from([arr[4]]);
-console.log(parseInt(dataBuf.toString('hex'),16));
-// 30 30 30 30 30 30 30 31 账号
-let accountNumber=arr.slice(5,13);
-const accountNumberBuf = Buffer.from(accountNumber);
-console.log(accountNumberBuf.toString())
-// 31 32 33 34 35 36  密码
-let password=arr.slice(13,19);
-const passwordBuf = Buffer.from(password);
-console.log(passwordBuf.toString())
-// 79 校验码 前面数字和
-let num=0
-for(let i=0;i<arr.length-1;i++){
-    num+=parseInt(arr[i],16)
+// for (const b of Buffer.from('1447656645380')) {
+//   console.log(parseInt(b,16));
+// }
+const ab = new ArrayBuffer(10);
+const buf = Buffer.from('14 00 0A');
+// 060001A200AF
+// 140001A00E303030303030303131323334353679
+// 输出: 2
+let data=buf.toString('hex');
+let arr=[]
+for(let i=0;i<data.length/2;i++){
+  arr[i]=data.substring(2*i,2*(i+1));  
 }
-console.log(num.toString(16))
+console.log(arr)
+// let bufs=['14','00','01','A0','0E','30','30','30','30','30','30','30','31','31','32','33','34','35','36','79']
+// let arr=bufs.map((item)=>{
+//   return '0x'+item
+// })
+// let login=Buffer.from(['14','00','01','A0','0E','30','30','30','30','30','30','30','31','31','32','33','34','35','36','79']);
+// // 14 长度20
+// const buf = Buffer.from([arr[0]]);
+// console.log(parseInt(buf.toString('hex'),16));
+// // 00 01 机器的编号 00 * 256 + 01 = 1
+// console.log(arr[1]*256+Number(arr[2]))
+// // A0  登陆
+// // 0E 数据长度14
+// const dataBuf = Buffer.from([arr[4]]);
+// console.log(parseInt(dataBuf.toString('hex'),16));
+// // 30 30 30 30 30 30 30 31 账号
+// let accountNumber=arr.slice(5,13);
+// const accountNumberBuf = Buffer.from(accountNumber);
+// console.log(accountNumberBuf.toString())
+// // 31 32 33 34 35 36  密码
+// let password=arr.slice(13,19);
+// const passwordBuf = Buffer.from(password);
+// console.log(passwordBuf.toString())
+// // 79 校验码 前面数字和
+
 // Buffer.from([07 00 01 A1 01 32 DC]);
 
 // 07长度为7
@@ -71,3 +81,9 @@ console.log(num.toString(16))
 //07  7个数据
 //data[0]-data[5] 时间 12 04 1C 08 08 06 //18年 4月28号 08：08：06 时间原值返回
 //data[6] 是否正确 0不正确 1正确
+
+// 270001a421983a0000004b000500c801f400c8001400320014005a0000000060ae0a0027108c79
+// 270001a421983a0000004b000500c801f400c8001400320014005a0000000060ae0a0027108c23>
+//983a0000 小端存储((00x256+00)x256+3a)x256+98 井低标高
+//004b  00*256+4b 进水管高度
+//0005  同上  
