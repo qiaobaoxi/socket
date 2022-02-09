@@ -1,0 +1,56 @@
+[2022-02-09T11:09:56.905] [ERROR] default - Error: ER_ACCESS_DENIED_ERROR: Access denied for user 'root'@'49.77.103.80' (using password: YES)
+    at Handshake.Sequence._packetToError (C:\Users\Administrator\Desktop\socket\node_modules\mysql\lib\protocol\sequences\Sequence.js:47:14)
+    at Handshake.ErrorPacket (C:\Users\Administrator\Desktop\socket\node_modules\mysql\lib\protocol\sequences\Handshake.js:123:18)
+    at Protocol._parsePacket (C:\Users\Administrator\Desktop\socket\node_modules\mysql\lib\protocol\Protocol.js:291:23)
+    at Parser._parsePacket (C:\Users\Administrator\Desktop\socket\node_modules\mysql\lib\protocol\Parser.js:433:10)
+    at Parser.write (C:\Users\Administrator\Desktop\socket\node_modules\mysql\lib\protocol\Parser.js:43:10)
+    at Protocol.write (C:\Users\Administrator\Desktop\socket\node_modules\mysql\lib\protocol\Protocol.js:38:16)
+    at Socket.<anonymous> (C:\Users\Administrator\Desktop\socket\node_modules\mysql\lib\Connection.js:88:28)
+    at Socket.<anonymous> (C:\Users\Administrator\Desktop\socket\node_modules\mysql\lib\Connection.js:526:10)
+    at Socket.emit (events.js:315:20)
+    at addChunk (_stream_readable.js:295:12)
+    --------------------
+    at Protocol._enqueue (C:\Users\Administrator\Desktop\socket\node_modules\mysql\lib\protocol\Protocol.js:144:48)
+    at Protocol.handshake (C:\Users\Administrator\Desktop\socket\node_modules\mysql\lib\protocol\Protocol.js:51:23)
+    at PoolConnection.connect (C:\Users\Administrator\Desktop\socket\node_modules\mysql\lib\Connection.js:116:18)
+    at Pool.getConnection (C:\Users\Administrator\Desktop\socket\node_modules\mysql\lib\Pool.js:48:16)
+    at Socket.<anonymous> (C:\Users\Administrator\Desktop\socket\index.js:67:27)
+    at Socket.emit (events.js:315:20)
+    at addChunk (_stream_readable.js:295:12)
+    at readableAddChunk (_stream_readable.js:271:9)
+    at Socket.Readable.push (_stream_readable.js:212:10)
+    at TCP.onStreamRead (internal/stream_base_commons.js:186:23) {
+  code: 'ER_ACCESS_DENIED_ERROR',
+  errno: 1045,
+  sqlMessage: "Access denied for user 'root'@'49.77.103.80' (using password: YES)",
+  sqlState: '28000',
+  fatal: true
+}
+[2022-02-09T11:18:19.064] [ERROR] default - Error: ER_ACCESS_DENIED_ERROR: Access denied for user 'root'@'49.77.103.80' (using password: YES)
+    at Handshake.Sequence._packetToError (C:\Users\Administrator\Desktop\socket\node_modules\mysql\lib\protocol\sequences\Sequence.js:47:14)
+    at Handshake.ErrorPacket (C:\Users\Administrator\Desktop\socket\node_modules\mysql\lib\protocol\sequences\Handshake.js:123:18)
+    at Protocol._parsePacket (C:\Users\Administrator\Desktop\socket\node_modules\mysql\lib\protocol\Protocol.js:291:23)
+    at Parser._parsePacket (C:\Users\Administrator\Desktop\socket\node_modules\mysql\lib\protocol\Parser.js:433:10)
+    at Parser.write (C:\Users\Administrator\Desktop\socket\node_modules\mysql\lib\protocol\Parser.js:43:10)
+    at Protocol.write (C:\Users\Administrator\Desktop\socket\node_modules\mysql\lib\protocol\Protocol.js:38:16)
+    at Socket.<anonymous> (C:\Users\Administrator\Desktop\socket\node_modules\mysql\lib\Connection.js:88:28)
+    at Socket.<anonymous> (C:\Users\Administrator\Desktop\socket\node_modules\mysql\lib\Connection.js:526:10)
+    at Socket.emit (events.js:315:20)
+    at addChunk (_stream_readable.js:295:12)
+    --------------------
+    at Protocol._enqueue (C:\Users\Administrator\Desktop\socket\node_modules\mysql\lib\protocol\Protocol.js:144:48)
+    at Protocol.handshake (C:\Users\Administrator\Desktop\socket\node_modules\mysql\lib\protocol\Protocol.js:51:23)
+    at PoolConnection.connect (C:\Users\Administrator\Desktop\socket\node_modules\mysql\lib\Connection.js:116:18)
+    at Pool.getConnection (C:\Users\Administrator\Desktop\socket\node_modules\mysql\lib\Pool.js:48:16)
+    at Socket.<anonymous> (C:\Users\Administrator\Desktop\socket\index.js:67:27)
+    at Socket.emit (events.js:315:20)
+    at addChunk (_stream_readable.js:295:12)
+    at readableAddChunk (_stream_readable.js:271:9)
+    at Socket.Readable.push (_stream_readable.js:212:10)
+    at TCP.onStreamRead (internal/stream_base_commons.js:186:23) {
+  code: 'ER_ACCESS_DENIED_ERROR',
+  errno: 1045,
+  sqlMessage: "Access denied for user 'root'@'49.77.103.80' (using password: YES)",
+  sqlState: '28000',
+  fatal: true
+}
