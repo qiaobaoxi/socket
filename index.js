@@ -56,7 +56,7 @@ net.createServer(function (sock) {
                         FnChangeTime(sock, newDate, arr1)
                     }
                 } catch (err) {
-                    return;
+                    return logger.errorlog.error(err);
                 }
                 break;
             case '82':
@@ -69,20 +69,26 @@ net.createServer(function (sock) {
                            return logger.errorlog.error(err) 
                         }; // not connected!
                         // Use the connection
-                        console.log(connection);
-                        // connection.query(`SELECT * FROM bussiness WHERE bussinessNum=${bussiness}`, function (error, results, fields) {
-                        //     // When done with the connection, release it.
-                        //     connection.release();
+                        console.log(bussiness);
+                        connection.query(`SELECT * FROM bussiness WHERE bussinessNum=${bussiness}`, function (error, results, fields) {
+                            // When done with the connection, release it.
+                            connection.release();
+                            // Handle error after the release.
+                            if (error) {
+                                logger.errorlog.error(error);
+                                return
+                            }else{
+                                if(results.length>0){
 
-                        //     // Handle error after the release.
-                        //     if (error) {
-                        //         logger.errorlog.error(error);
-                        //         return
-                        //     }
-                        // });
+                                }else{
+                                  
+                                    
+                                }
+                            }
+                        });
                     });
                 } catch (err) {
-                    return;
+                    return logger.errorlog.error(err);
                 }
                 break;
             case 'a4':
@@ -124,64 +130,64 @@ net.createServer(function (sock) {
                     // console.log('ss'+ss);
                     let cod = result(arr, 33, 34);
                     let ph = parseInt(arr[35], 16)
-                    mysql.query(`SELECT * FROM equipment WHERE equipmentName=${equipment}`, (error, results, fields) => {
-                        if (error) {
-                            console.log(error)
-                            return
-                        }
-                        if (results.length === 0) {
-                            return
-                        } else {
-                            console.log(results)
-                            let oEquipment = results[0];
-                            mysql.query(`SELECT * FROM equipment_part WHERE equipmentId=${oEquipment.id}`, (err, results1, fields1) => {
-                                if (err) {
-                                    console.log(err)
-                                    return
-                                }
-                                if (results1.length === 0) {
-                                    console.log("进入添加模式")
-                                    let params = { equipmentId: oEquipment.id, drainageOverflowHeight: 0, InterceptingLimitflowHeight: 0, sunnyToRain: 0, vigilance: 0, rainGauge: 0, bottomHoleHeight, truncatedPipeHeight, groundHeight, sewerageSluice, sluiceHeight, stopWaterLevel1, startWaterLevel1, stopWaterLevel2, startWaterLevel2, sewerageSluiceHeight: 0, stopWaterLevel3, startWaterLevel3, ss, cod, ph, serverState: 1, clientState: 0 };
-                                    mysql.query('INSERT INTO  equipment_part  SET ?', params, (error2, results2, fields2) => {
-                                        if (error2) {
-                                            console.log(error2);
-                                            return
-                                        }
-                                        console.log(results2)
-                                        let resultArr = ['0x07', '0x' + arr[1], '0x' + arr[2], '0xa5', '0x01', '0x01'];
-                                        let num = 0
-                                        for (let i = 0; i < resultArr.length; i++) {
-                                            num += parseInt(resultArr[i], 16)
-                                        }
-                                        resultArr.push('0x' + num.toString(16))
-                                        console.log(Buffer.from(resultArr));
-                                        sock.write(Buffer.from(resultArr));
-                                    });
-                                } else if (results1.length === 1) {
-                                    let equipmentPart = results1[0];
-                                    mysql.query('UPDATE equipment_part SET bottomHoleHeight = ?, truncatedPipeHeight = ?, groundHeight = ? , sewerageSluice = ? , sluiceHeight = ?, stopWaterLevel1 = ?, startWaterLevel1 = ?, stopWaterLevel2 = ?, startWaterLevel2 = ?, stopWaterLevel3 = ?, startWaterLevel3=?, ss=?, cod=?, ph = ?,serverState=? WHERE id = ?',
-                                        [bottomHoleHeight, truncatedPipeHeight, groundHeight, sewerageSluice, sluiceHeight, stopWaterLevel1, startWaterLevel1, stopWaterLevel2, startWaterLevel2, stopWaterLevel3, startWaterLevel3, ss, cod, ph, serverState, equipmentPart.id], (error2, results2, fields2) => {
-                                            if (error2) {
-                                                console.log(error2);
-                                                return
-                                            }
-                                            let resultArr = ['0x07', '0x' + arr[1], '0x' + arr[2], '0xa5', '0x01', '0x01'];
-                                            let num = 0
-                                            for (let i = 0; i < resultArr.length; i++) {
-                                                num += parseInt(resultArr[i], 16)
-                                            }
-                                            resultArr.push('0x' + num.toString(16))
-                                            console.log(Buffer.from(resultArr));
-                                            sock.write(Buffer.from(resultArr));
-                                        });
-                                } else {
-                                    let equipmentPart = results1[0]
-                                }
-                            });
-                        }
-                        redis.set(equipment, sock);
-                        console.log(redis.get(equipment));
-                    })
+                    // mysql.query(`SELECT * FROM equipment WHERE equipmentName=${equipment}`, (error, results, fields) => {
+                    //     if (error) {
+                    //         console.log(error)
+                    //         return
+                    //     }
+                    //     if (results.length === 0) {
+                    //         return
+                    //     } else {
+                    //         console.log(results)
+                    //         let oEquipment = results[0];
+                    //         mysql.query(`SELECT * FROM equipment_part WHERE equipmentId=${oEquipment.id}`, (err, results1, fields1) => {
+                    //             if (err) {
+                    //                 console.log(err)
+                    //                 return
+                    //             }
+                    //             if (results1.length === 0) {
+                    //                 console.log("进入添加模式")
+                    //                 let params = { equipmentId: oEquipment.id, drainageOverflowHeight: 0, InterceptingLimitflowHeight: 0, sunnyToRain: 0, vigilance: 0, rainGauge: 0, bottomHoleHeight, truncatedPipeHeight, groundHeight, sewerageSluice, sluiceHeight, stopWaterLevel1, startWaterLevel1, stopWaterLevel2, startWaterLevel2, sewerageSluiceHeight: 0, stopWaterLevel3, startWaterLevel3, ss, cod, ph, serverState: 1, clientState: 0 };
+                    //                 mysql.query('INSERT INTO  equipment_part  SET ?', params, (error2, results2, fields2) => {
+                    //                     if (error2) {
+                    //                         console.log(error2);
+                    //                         return
+                    //                     }
+                    //                     console.log(results2)
+                    //                     let resultArr = ['0x07', '0x' + arr[1], '0x' + arr[2], '0xa5', '0x01', '0x01'];
+                    //                     let num = 0
+                    //                     for (let i = 0; i < resultArr.length; i++) {
+                    //                         num += parseInt(resultArr[i], 16)
+                    //                     }
+                    //                     resultArr.push('0x' + num.toString(16))
+                    //                     console.log(Buffer.from(resultArr));
+                    //                     sock.write(Buffer.from(resultArr));
+                    //                 });
+                    //             } else if (results1.length === 1) {
+                    //                 let equipmentPart = results1[0];
+                    //                 mysql.query('UPDATE equipment_part SET bottomHoleHeight = ?, truncatedPipeHeight = ?, groundHeight = ? , sewerageSluice = ? , sluiceHeight = ?, stopWaterLevel1 = ?, startWaterLevel1 = ?, stopWaterLevel2 = ?, startWaterLevel2 = ?, stopWaterLevel3 = ?, startWaterLevel3=?, ss=?, cod=?, ph = ?,serverState=? WHERE id = ?',
+                    //                     [bottomHoleHeight, truncatedPipeHeight, groundHeight, sewerageSluice, sluiceHeight, stopWaterLevel1, startWaterLevel1, stopWaterLevel2, startWaterLevel2, stopWaterLevel3, startWaterLevel3, ss, cod, ph, serverState, equipmentPart.id], (error2, results2, fields2) => {
+                    //                         if (error2) {
+                    //                             console.log(error2);
+                    //                             return
+                    //                         }
+                    //                         let resultArr = ['0x07', '0x' + arr[1], '0x' + arr[2], '0xa5', '0x01', '0x01'];
+                    //                         let num = 0
+                    //                         for (let i = 0; i < resultArr.length; i++) {
+                    //                             num += parseInt(resultArr[i], 16)
+                    //                         }
+                    //                         resultArr.push('0x' + num.toString(16))
+                    //                         console.log(Buffer.from(resultArr));
+                    //                         sock.write(Buffer.from(resultArr));
+                    //                     });
+                    //             } else {
+                    //                 let equipmentPart = results1[0]
+                    //             }
+                    //         });
+                    //     }
+                    //     redis.set(equipment, sock);
+                    //     console.log(redis.get(equipment));
+                    // })
                 } catch (err) {
                     return;
                 }
@@ -300,7 +306,7 @@ net.createServer(function (sock) {
                 break;
             default:
         }
-        timerFn()
+        // timerFn()
     });
     // 为这个socket实例添加一个"close"事件处理函数
     sock.on('close', function () {
