@@ -5,13 +5,13 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "node index.js"
+    "dev": "nodemon index.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "log4js": "^6.4.1",
-    "mysql": "^2.15.0",
+    "mysql": "^2.18.1",
     "redis-js": "^0.1.2"
   }
 }

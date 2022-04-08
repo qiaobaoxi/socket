@@ -61,137 +61,101 @@ net.createServer(function (sock) {
                 break;
             case '82':
                 try {
+                    // 设备号
+                    const equipment = result(arr1, 1, 2);
                     //公司号
                     const bussiness = parseInt(arr1[5], 16);
-                    let time = getElementTime(arr1, 11, 12, 13, 14, 15, 16);
+                    let time = getElementTime(arr1, 6, 7, 8, 9, 10, 11);
+                    const content = parseInt(arr1[12], 16);
+                    const length = parseInt(arr1[13], 16);
+                    const card=arr[14]+arr[15]+arr[16]+arr[17]+arr[18]+arr[19]+arr[20]+arr[21]
                     mysql.getConnection(function (err, connection) {
                         if (err) { 
                            return logger.errorlog.error(err) 
                         }; // not connected!
                         // Use the connection
-                        console.log(bussiness);
-                        connection.query(`SELECT * FROM bussiness WHERE bussinessNum=${bussiness}`, function (error, results, fields) {
-                            // When done with the connection, release it.
-                            connection.release();
-                            // Handle error after the release.
+                        mysql.query(`SELECT * FROM doorlog WHERE time="${time}" AND num=${82} AND bussiness=${bussiness} AND card="${card}" AND equipment=${equipment}`, (error, results, fields) => {
+                            console.log(error,results)
                             if (error) {
-                                logger.errorlog.error(error);
-                                return
-                            }else{
-                                if(results.length>0){
-
+                                    logger.errorlog.error(error);
+                                    return
                                 }else{
-                                  
-                                    
+                                    console.log(arr1)
+                                    let data=[arr1[1],arr1[2],'0x83',to16(8),arr1[5],arr1[6],arr1[7],arr1[8],arr1[9],arr1[10],arr1[11],'0x01'];
+                                    data.unshift(to16(data.length + 2));
+                                    data.push(to16(FnCheckCode(data)));
+                                    if(results.length > 0){
+                                        sock.write(Buffer.from(data));
+                                        return 
+                                    }else{
+                                        connection.query(`INSERT INTO doorlog SET ?`,{time,bussiness,num:82,content,length,card,equipment}, function (error, results, fields) {
+                                            // When done with the connection, release it.
+                                            connection.release();
+                                            // Handle error after the release.
+                                            if (error) {
+                                                logger.errorlog.error(error);
+                                                return
+                                            }else{
+                                                sock.write(Buffer.from(data));
+                                            }
+                                        });
+                                    }
                                 }
-                            }
-                        });
+                        })
+                        
                     });
                 } catch (err) {
                     return logger.errorlog.error(err);
                 }
                 break;
-            case 'a4':
+            case '84':
                 try {
-                    console.log('a4');
-                    const dataBuf = Buffer.from([arr1[4]]);
-                    let dataLength = parseInt(dataBuf.toString('hex'), 16)
-                    console.log(arrlength, arr1.length)
-                    if (dataLength != arrlength - 6) {
-                        return
-                    }
-                    // console.log('数据长度正确');
-                    let equipment = result(arr, 1, 2);
-                    // console.log('equipment'+equipment);
-                    let bottomHoleHeight = result1(arr, 5, 6, 7, 8);
-                    // console.log('bottomHoleHeight'+bottomHoleHeight);
-                    let truncatedPipeHeight = result(arr, 9, 10);
-                    // console.log('truncatedPipeHeight'+truncatedPipeHeight);
-                    let groundHeight = result(arr, 11, 12);
-                    // console.log('groundHeight'+groundHeight);
-                    let sewerageSluice = result(arr, 13, 14);
-                    // console.log('sewerageSluice'+sewerageSluice);
-                    let sluiceHeight = result(arr, 15, 16);
-                    // console.log('sluiceHeight'+sluiceHeight);
-                    let stopWaterLevel1 = result(arr, 17, 18);
-                    // console.log('stopWaterLevel1'+stopWaterLevel1);
-                    let startWaterLevel1 = result(arr, 19, 20);
-                    // console.log('startWaterLevel1'+startWaterLevel1);
-                    let stopWaterLevel2 = result(arr, 21, 22);
-                    // console.log('stopWaterLevel2'+stopWaterLevel2);
-                    let startWaterLevel2 = result(arr, 23, 24);
-                    // console.log('startWaterLevel2'+startWaterLevel2);
-                    let stopWaterLevel3 = result(arr, 25, 26);
-                    // console.log('stopWaterLevel3'+stopWaterLevel3);
-                    let startWaterLevel3 = result(arr, 27, 28);
-                    // console.log('startWaterLevel3'+startWaterLevel3);
-                    let ss = result1(arr, 29, 30, 31, 32);
-                    let serverState = 1;
-                    // console.log('ss'+ss);
-                    let cod = result(arr, 33, 34);
-                    let ph = parseInt(arr[35], 16)
-                    // mysql.query(`SELECT * FROM equipment WHERE equipmentName=${equipment}`, (error, results, fields) => {
-                    //     if (error) {
-                    //         console.log(error)
-                    //         return
-                    //     }
-                    //     if (results.length === 0) {
-                    //         return
-                    //     } else {
-                    //         console.log(results)
-                    //         let oEquipment = results[0];
-                    //         mysql.query(`SELECT * FROM equipment_part WHERE equipmentId=${oEquipment.id}`, (err, results1, fields1) => {
-                    //             if (err) {
-                    //                 console.log(err)
-                    //                 return
-                    //             }
-                    //             if (results1.length === 0) {
-                    //                 console.log("进入添加模式")
-                    //                 let params = { equipmentId: oEquipment.id, drainageOverflowHeight: 0, InterceptingLimitflowHeight: 0, sunnyToRain: 0, vigilance: 0, rainGauge: 0, bottomHoleHeight, truncatedPipeHeight, groundHeight, sewerageSluice, sluiceHeight, stopWaterLevel1, startWaterLevel1, stopWaterLevel2, startWaterLevel2, sewerageSluiceHeight: 0, stopWaterLevel3, startWaterLevel3, ss, cod, ph, serverState: 1, clientState: 0 };
-                    //                 mysql.query('INSERT INTO  equipment_part  SET ?', params, (error2, results2, fields2) => {
-                    //                     if (error2) {
-                    //                         console.log(error2);
-                    //                         return
-                    //                     }
-                    //                     console.log(results2)
-                    //                     let resultArr = ['0x07', '0x' + arr[1], '0x' + arr[2], '0xa5', '0x01', '0x01'];
-                    //                     let num = 0
-                    //                     for (let i = 0; i < resultArr.length; i++) {
-                    //                         num += parseInt(resultArr[i], 16)
-                    //                     }
-                    //                     resultArr.push('0x' + num.toString(16))
-                    //                     console.log(Buffer.from(resultArr));
-                    //                     sock.write(Buffer.from(resultArr));
-                    //                 });
-                    //             } else if (results1.length === 1) {
-                    //                 let equipmentPart = results1[0];
-                    //                 mysql.query('UPDATE equipment_part SET bottomHoleHeight = ?, truncatedPipeHeight = ?, groundHeight = ? , sewerageSluice = ? , sluiceHeight = ?, stopWaterLevel1 = ?, startWaterLevel1 = ?, stopWaterLevel2 = ?, startWaterLevel2 = ?, stopWaterLevel3 = ?, startWaterLevel3=?, ss=?, cod=?, ph = ?,serverState=? WHERE id = ?',
-                    //                     [bottomHoleHeight, truncatedPipeHeight, groundHeight, sewerageSluice, sluiceHeight, stopWaterLevel1, startWaterLevel1, stopWaterLevel2, startWaterLevel2, stopWaterLevel3, startWaterLevel3, ss, cod, ph, serverState, equipmentPart.id], (error2, results2, fields2) => {
-                    //                         if (error2) {
-                    //                             console.log(error2);
-                    //                             return
-                    //                         }
-                    //                         let resultArr = ['0x07', '0x' + arr[1], '0x' + arr[2], '0xa5', '0x01', '0x01'];
-                    //                         let num = 0
-                    //                         for (let i = 0; i < resultArr.length; i++) {
-                    //                             num += parseInt(resultArr[i], 16)
-                    //                         }
-                    //                         resultArr.push('0x' + num.toString(16))
-                    //                         console.log(Buffer.from(resultArr));
-                    //                         sock.write(Buffer.from(resultArr));
-                    //                     });
-                    //             } else {
-                    //                 let equipmentPart = results1[0]
-                    //             }
-                    //         });
-                    //     }
-                    //     redis.set(equipment, sock);
-                    //     console.log(redis.get(equipment));
-                    // })
+                    // 设备号
+                    const equipment = result(arr1, 1, 2);
+                    //公司号
+                    const bussiness = parseInt(arr1[5], 16);
+                    let time = getElementTime(arr1, 6, 7, 8, 9, 10, 11);
+                    const content = parseInt(arr1[12], 16);
+                    const length = parseInt(arr1[13], 16);
+                    const card=arr[14]+arr[15]+arr[16]+arr[17]+arr[18]+arr[19]+arr[20]+arr[21]
+                    const money=parseInt(arr[25]+arr[24]+arr[23]+arr[22], 16);
+                    mysql.getConnection(function (err, connection) {
+                        if (err) { 
+                           return logger.errorlog.error(err) 
+                        }; // not connected!
+                        // Use the connection
+                        mysql.query(`SELECT * FROM chargelog WHERE time="${time}" AND num=${84} AND bussiness=${bussiness} AND card="${card}" AND equipment=${equipment} AND money=${money}`, (error, results, fields) => {
+                            console.log(error,results)
+                            if (error) {
+                                    logger.errorlog.error(error);
+                                    return
+                                }else{
+                                    let data=[arr1[1],arr1[2],'0x83',to16(8),arr1[5],arr1[6],arr1[7],arr1[8],arr1[9],arr1[10],arr1[11],'0x01'];
+                                    data.unshift(to16(data.length + 2));
+                                    data.push(to16(FnCheckCode(data)));
+                                    if(results.length > 0){
+                                        sock.write(Buffer.from(data));
+                                        return 
+                                    }else{
+                                        connection.query(`INSERT INTO doorlog SET ?`,{time,bussiness,num:82,content,length,card,equipment}, function (error, results, fields) {
+                                            // When done with the connection, release it.
+                                            connection.release();
+                                            // Handle error after the release.
+                                            if (error) {
+                                                logger.errorlog.error(error);
+                                                return
+                                            }else{
+                                                sock.write(Buffer.from(data));
+                                            }
+                                        });
+                                    }
+                                }
+                        })
+                        
+                    });
                 } catch (err) {
-                    return;
+                    return logger.errorlog.error(err);
                 }
-                break;
             case 'a8':
                 let equipment = result(arr1, 1, 2);
                 const dataBuf = Buffer.from([arr1[4]]);
